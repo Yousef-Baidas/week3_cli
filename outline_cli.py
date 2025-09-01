@@ -15,4 +15,6 @@ def main():
 
     print(f"Number of bullet points: {args.bullets}")
 
-    
+    out_dir = Path("outlines")
+
+    out_dir.mkdir(parents= True, exist_ok= True)
