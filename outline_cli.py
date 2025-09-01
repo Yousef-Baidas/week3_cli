@@ -1,20 +1,24 @@
-from pathlib import Path
 import argparse
-
+from pathlib import Path
 def main():
 
-    parser = argparse.ArgumentParser(description= "Generates an outline for some topic")
+    parser = argparse.ArgumentParser(description= "Generates outlines for a specified topic")
 
-    parser.add_argument("topic", help= "Topic used for the generated outline")
-
-    parser.add_argument("--bullets", type= int, default= 5, help= "Bullets points used for the outline structure")
+    parser.add_argument("topic", help= "The topic used for the outline")
+    parser.add_argument("--bullets", type= int, default= 5, help= "The bullet points used to build the structure of the outline")
 
     args = parser.parse_args()
 
     print(f"Topic Chosen: {args.topic}")
-
-    print(f"Number of bullet points: {args.bullets}")
+    print(f"Number of bullet points: {args.bullet}")
 
     out_dir = Path("outlines")
-
     out_dir.mkdir(parents= True, exist_ok= True)
+
+    file_path = out_dir / f"{args.topic}"
+
+    with file_path.open("w") as f:
+        f.write(f"# {args.topic}\n")
+
+        for i in range(1, args.bullets + 1):
+            f.write("-point {i}\n")
