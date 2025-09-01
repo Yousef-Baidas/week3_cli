@@ -22,3 +22,6 @@ def main():
 
         for i in range(1, args.bullets + 1):
             f.write("-point {i}\n")
+
+if __name__ == "__main__":
+    main()
