@@ -43,7 +43,7 @@ def slugify(text: str) -> str:
         else:
             result.append(char)
 
-    result = "".join(result)
+    result = "".join(result).strip("-")
     result = re.sub("-+", "-", result)
 
     return result
