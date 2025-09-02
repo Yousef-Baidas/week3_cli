@@ -49,6 +49,8 @@ def slugify(text: str) -> str:
     if result == "":
         result = "untitled"
 
+    result = result[:50].strip("-")
+
     return result
 
 if __name__ == "__main__":
