@@ -1,7 +1,14 @@
 import argparse
 import unicodedata
 import re
+import os
 from pathlib import Path
+from dotenv import load_dotenv
+from openai import OpenAI
+
+load_dotenv()
+client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+
 def main():
 
     parser = argparse.ArgumentParser(description= "Generates outlines for a specified topic")
@@ -20,11 +27,26 @@ def main():
     safe_name = slugify(args.topic)
     file_path = out_dir / f"{safe_name}.md"
 
-    with file_path.open("w") as f:
-        f.write(f"# {args.topic}\n")
+    response = client.chat.completions.create(
+    model="gpt-4o-mini",
+    messages=[
+        {"role": "system", "content": "You are a helpful assistant."},
+        {
+            "role": "user",
+            "content": f"Write {args.bullets} concise bullet points about {args.topic}. "
+                       "Output plain text, one bullet per line, no numbering."
+        },
+    ],
+)
 
-        for i in range(1, args.bullets + 1):
-            f.write("-point {i}\n")
+
+    outline = response.choices[0].message.content
+
+
+    with file_path.open("w", encoding= "utf-8") as f:
+        f.write(f"# {args.topic}\n\n")
+
+        f.write(outline.strip() + "\n")
 
 def slugify(text: str) -> str:
     text = text.lower()
