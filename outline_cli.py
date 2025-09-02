@@ -1,5 +1,6 @@
 import argparse
 import unicodedata
+import re
 from pathlib import Path
 def main():
 
@@ -16,7 +17,8 @@ def main():
     out_dir = Path("outlines")
     out_dir.mkdir(parents= True, exist_ok= True)
 
-    file_path = out_dir / f"{args.topic}.md"
+    safe_name = slugify(args.topic)
+    file_path = out_dir / f"{safe_name}.md"
 
     with file_path.open("w") as f:
         f.write(f"# {args.topic}\n")
@@ -41,7 +43,10 @@ def slugify(text: str) -> str:
         else:
             result.append(char)
 
-    return "".join(result)
+    result = "".join(result)
+    result = re.sub("-+", "-", result)
+
+    return result
 
 if __name__ == "__main__":
     main()
