@@ -46,6 +46,9 @@ def slugify(text: str) -> str:
     result = "".join(result).strip("-")
     result = re.sub("-+", "-", result)
 
+    if result == "":
+        result = "untitled"
+
     return result
 
 if __name__ == "__main__":
