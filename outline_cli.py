@@ -4,10 +4,14 @@ import re
 import os
 from pathlib import Path
 from dotenv import load_dotenv
-from openai import OpenAI
+import ollama
 
 load_dotenv()
-client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+api_key = os.getenv("OLLAMA_API_KEY")
+if not api_key:
+    print("Missing OLLAMA_API_KEY in .env (set to any dummy value).")
+    exit(1)
+
 
 def main():
 
@@ -27,20 +31,15 @@ def main():
     safe_name = slugify(args.topic)
     file_path = out_dir / f"{safe_name}.md"
 
-    response = client.chat.completions.create(
-    model="gpt-4o-mini",
-    messages=[
-        {"role": "system", "content": "You are a helpful assistant."},
-        {
-            "role": "user",
-            "content": f"Write {args.bullets} concise bullet points about {args.topic}. "
-                       "Output plain text, one bullet per line, no numbering."
-        },
-    ],
-)
+    response = ollama.chat(
+     model="gemma3n",
+        messages=[
+            {"role": "user", "content": f"Write {args.bullets} concise bullet points about {args.topic}. Output plain text, one bullet per line, no numbering."}
+        ]
+    )
 
+    outline = response["message"]["content"]
 
-    outline = response.choices[0].message.content
 
 
     with file_path.open("w", encoding= "utf-8") as f:
